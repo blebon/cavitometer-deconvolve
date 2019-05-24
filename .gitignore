@@ -50,6 +50,7 @@ docs/_build/
 
 # Jupyter
 .ipynb_checkpoints
+*.ipynb
 
 # Environments
 .env

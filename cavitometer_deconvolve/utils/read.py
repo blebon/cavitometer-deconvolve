@@ -8,12 +8,12 @@ This module contains the codes for reading the raw files.
 from numpy import genfromtxt, isnan, nan_to_num
 
 
-def get_units(filename, extension=".csv"):
+def get_units(filename: str, extension: str = ".csv") -> tuple:
     """ Read the units from the raw signal file.
 
-    Keyword arguments
-    filename -- name of raw signal file, including path
-    extension -- extension of raw files (default '.csv')
+    :param filename: name of raw signal file, including path
+    :param extension: extension of raw files (default '.csv')
+    :rtype: tuple
     """
     with open(filename, "r") as f:
         # Units are always in the second line
@@ -26,12 +26,12 @@ def get_units(filename, extension=".csv"):
     return units
 
 
-def read_signal(filename, extension='.csv'):
+def read_signal(filename: str, extension: str = ".csv") -> tuple:
     """ Read signals and remove Infs
 
-    Keyword arguments
-    filename -- name of raw signal file, including path
-    extension -- extension of raw files (default '.csv')
+    :param filename: name of raw signal file, including path
+    :param extension: extension of raw files (default '.csv')
+    :rtype: tuple
     """
     units = get_units(filename, extension=extension)
 

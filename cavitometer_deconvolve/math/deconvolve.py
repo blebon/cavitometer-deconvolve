@@ -5,7 +5,7 @@ This module contains the codes for deconvolution of time signals.
 
 """
 
-from numpy import vectorize, linspace, sqrt
+from numpy import vectorize, linspace, sqrt, ndarray
 # from scipy.signal import blackman
 from scipy.interpolate import interp1d
 
@@ -13,20 +13,22 @@ from pyfftw import interfaces
 
 from cavitometer_deconvolve.math.FFT import fast_fourier_transform, two_sided_to_one, one_sided_to_two
 from cavitometer_deconvolve.math.convert import dB_to_V
+from cavitometer_deconvolve.hardware.sensitivities import Probe, PreAmplifier
 
 
-def deconvolution(time, signal, units, probe, pre_amp=None):
+def deconvolution(time: ndarray, signal: ndarray, units: list,
+                  probe: Probe, pre_amp: PreAmplifier = None) -> tuple:
     """Converts the voltage signal to pressures.
 
-    1. Interpolate the sensitivities and amplification factors in the FFT frequency range.
+    1. Interpolate the get_sensitivities and amplification factors in the FFT frequency range.
     2. Apply deconvolution formula
-        
-    Keyword arguments:
-    time -- the time numpy array
-    signal -- the signal numpy array
-    units -- the SI units for the time and signal arrays
-    probe -- Probe instance containing the sensitivity values
-    pre_amp -- PreAmplifier instance containing the pre-amp factors
+
+    :param time: the time numpy array
+    :param signal: the signal numpy array
+    :param units: the SI units for the time and signal arrays
+    :param probe: Probe instance containing the sensitivity values
+    :param pre_amp: PreAmplifier instance containing the pre-amp factors
+    :rtype: tuple
     """
     # For zero padding, uncomment concatenate lines if required
     # N0 = len(x1)
@@ -39,7 +41,7 @@ def deconvolution(time, signal, units, probe, pre_amp=None):
     # smooth = 0.0
 
     # 1. Interpolation
-    sensitivity_function = interp1d(probe.get_frequencies(),
+    sensitivity_function = interp1d(probe.frequencies,
                                     decibel_to_volts(probe.get_sensitivities()),
                                     kind='nearest',
                                     fill_value="extrapolate",
@@ -48,7 +50,7 @@ def deconvolution(time, signal, units, probe, pre_amp=None):
     # sensitivity_function.set_smoothing_factor(smooth)
 
     if pre_amp:
-        amplification_factor = interp1d(pre_amp.get_frequencies(),
+        amplification_factor = interp1d(pre_amp.frequencies,
                                         pre_amp.get_sensitivities(),
                                         kind='nearest',
                                         fill_value="extrapolate",

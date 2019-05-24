@@ -9,4 +9,5 @@ pip install cavitometer-deconvolve
 ```
 
 ## Usage
-See docs/examples.rst for usage examples.
+See [docs/examples.rst](https://github.com/blebon/cavitometer-deconvolve/blob/master/docs/examples.rst) 
+for usage examples.

@@ -7,7 +7,7 @@ with open("requirements.txt", "r") as fh:
     requirements = fh.read()
 
 setup(
-    name="cavitometer-deconvolve-blebon",
+    name="cavitometer-deconvolve",
     version="0.0.1",
     author="Bruno Lebon",
     author_email="Bruno.Lebon@brunel.ac.uk",
