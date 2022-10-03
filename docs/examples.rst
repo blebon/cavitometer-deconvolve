@@ -4,6 +4,10 @@ Examples
 Read calibration data
 ----------------------
 
+Use the ``cavitometer_deconvolve.hardware.sensitivities.Probe()`` function to read the probe's sensitivity values.
+
+.. autofunction :: cavitometer_deconvolve.hardware.sensitivities.Probe
+
 .. code-block:: python
 
     >> from cavitometer_deconvolve.hardware import sensitivities
@@ -19,8 +23,12 @@ Read calibration data
            -269.1, -268.2, -267.8, -267.8, -269.6, -273.5, -277.9, -279. ,
            -275.1, -271.9, -267.8, -264.7, -263.6, -264.1, -266.7])
 
-Read signal
--------------
+Read voltage signal
+-------------------
+
+Read voltage signals using the ``cavitometer_deconvolve.utils.read.read_signal()`` function.
+
+.. autofunction :: cavitometer_deconvolve.utils.read.read_signal
 
 .. code-block:: python
 
@@ -39,7 +47,11 @@ Read signal
            [ 2.00059988e+00,  2.98376300e+01, -1.10487100e+00]])
 
 Deconvolve signal
--------------------
+-----------------
+
+Convert the voltages to pressures using the ``cavitometer_deconvolve.math.deconvolve.deconvolution()`` function.
+
+.. autofunction :: cavitometer_deconvolve.math.deconvolve.deconvolution
 
 .. code-block:: python
 

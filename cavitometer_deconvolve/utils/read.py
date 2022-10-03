@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-""" Read signal files
+""" Read the signal files.
 
 This module contains the codes for reading the raw files.
 
@@ -9,7 +9,7 @@ from numpy import genfromtxt, isnan, nan_to_num
 
 
 def get_units(filename: str, extension: str = ".csv") -> tuple:
-    """ Read the units from the raw signal file.
+    """Read the units from the raw signal file.
 
     :param filename: name of raw signal file, including path
     :param extension: extension of raw files (default '.csv')
@@ -19,15 +19,15 @@ def get_units(filename: str, extension: str = ".csv") -> tuple:
         # Units are always in the second line
         f.readline()
         u = f.readline()
-        if extension == '.csv':
-            units = u.replace('\n', '').split(',')
+        if extension == ".csv":
+            units = u.replace("\n", "").split(",")
         else:
-            units = u.replace('\r', '').split('\t')
+            units = u.replace("\r", "").split("\t")
     return units
 
 
 def read_signal(filename: str, extension: str = ".csv") -> tuple:
-    """ Read signals and remove Infs
+    """Read signals and remove Infs.
 
     :param filename: name of raw signal file, including path
     :param extension: extension of raw files (default '.csv')
@@ -35,17 +35,18 @@ def read_signal(filename: str, extension: str = ".csv") -> tuple:
     """
     units = get_units(filename, extension=extension)
 
-    if extension == '.csv':
-        sep = ','
+    if extension == ".csv":
+        sep = ","
     else:
-        sep = '\t'
+        sep = "\t"
     # Read signal
-    _signals_array = genfromtxt(filename,
-                                delimiter=sep,
-                                skip_header=3,
-                                usecols=None,
-                                unpack=False,
-                                )
+    _signals_array = genfromtxt(
+        filename,
+        delimiter=sep,
+        skip_header=3,
+        usecols=None,
+        unpack=False,
+    )
 
     # Remove Infs if any
     for i in range(1, _signals_array.shape[1]):

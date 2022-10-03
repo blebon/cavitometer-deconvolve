@@ -13,7 +13,7 @@ setup(
     author_email="Bruno.Lebon@brunel.ac.uk",
     description="Hydrophone voltage to pressure conversion",
     long_description=long_description,
-    long_description_content_type='text/markdown',
+    long_description_content_type="text/markdown",
     url="https://github.com/blebon/cavitometer-deconvolve",
     install_requires=requirements,
     packages=find_packages(),

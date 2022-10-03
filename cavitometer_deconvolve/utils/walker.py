@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-""" Walk directory structure
+""" Walk the directory structure.
 
 This module contains the codes for walking the directory structure.
 
@@ -9,7 +9,7 @@ import numpy
 from os import path, walk
 
 
-def get_raw_files (top, extension='.csv'):
+def get_raw_files(top, extension=".csv"):
     """Get all raw files including their paths.
 
     Keyword arguments
@@ -25,9 +25,9 @@ def get_raw_files (top, extension='.csv'):
     return files_list
 
 
-def get_folders (top, extension='.csv'):
+def get_folders(top, extension=".csv"):
     """Get directory structure for folders containing raw files.
-        
+
     Keyword arguments
     top -- top level directory
     extension -- extension of raw files (default '.csv')
