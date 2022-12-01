@@ -1,6 +1,22 @@
+# Library dependencies
 numpy
 scipy
 matplotlib
 mpi4py
 pandas
 pyfftw
+
+# Testing
+pytest
+
+# Documentation
+# sphinx
+# sphinx_rtd_theme
+# sphinxcontrib-bibtex
+# nbsphinx
+# recommonmark
+# sphinx-markdown-tables
+
+# GUI
+PyQT5
+fbs

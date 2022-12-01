@@ -1,0 +1,33 @@
+[build-system]
+requires = [
+  "hatchling",
+  "build",
+  "wheel",
+]
+build-backend = "hatchling.build"
+
+[project]
+name = "cavitometer-deconvolve"
+version = "0.1"
+authors = [
+  { name="Bruno Lebon", email="Bruno.Lebon@brunel.ac.uk" },
+]
+description = "Hydrophone voltage to pressure conversion"
+readme = "README.md"
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3",
+        "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+        "Operating System :: OS Independent",
+]
+dynamic = ["dependencies"]
+
+[project.urls]
+"Homepage" = "https://github.com/blebon/cavitometer-deconvolve"
+"Bug Tracker" = "https://github.com/blebon/cavitometer-deconvolve/issues"
+
+[tool.setuptools.dynamic]
+dependencies = {file = ["requirements.txt"]}
+
+[tool.distutils.bdist_wheel]
+universal = true

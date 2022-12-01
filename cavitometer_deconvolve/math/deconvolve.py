@@ -26,6 +26,7 @@ def deconvolution(
     signal: ndarray,
     units: list,
     probe: Probe,
+    probe_position: int = 0,
     pre_amp: PreAmplifier = None,
 ) -> tuple:
     """Converts the voltage signal to pressures.
@@ -37,6 +38,7 @@ def deconvolution(
     :param signal: the signal numpy array
     :param units: the SI units for the time and signal arrays
     :param probe: Probe instance containing the sensitivity values
+    :param probe_position: 0 = Vertical, 1 = 45 degrees
     :param pre_amp: PreAmplifier instance containing the pre-amp factors
     :rtype: tuple
     """
@@ -53,7 +55,7 @@ def deconvolution(
     # 1. Interpolation
     sensitivity_function = interp1d(
         probe.frequencies,
-        decibel_to_volts(probe.get_sensitivities()),
+        decibel_to_volts(probe.get_sensitivities(probe_position)),
         kind="nearest",
         fill_value="extrapolate",
     )

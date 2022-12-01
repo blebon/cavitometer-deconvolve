@@ -10,11 +10,11 @@ class TestRead(TestCase):
     SIGNAL = [0.00000000e00, -4.48541100e01, -5.18862200e-01]
 
     def test_units(self):
-        units = read.get_units(f"..{sep}Measurements{sep}Two_Probes.csv")
+        units = read.get_units(f"tests{sep}Measurements{sep}Two_Probes.csv")
 
         self.assertEqual((list(units)), self.UNITS)
 
     def test_read_signal(self):
-        _, signal = read.read_signal(f"..{sep}Measurements{sep}Two_Probes.csv")
+        _, signal = read.read_signal(f"tests{sep}Measurements{sep}Two_Probes.csv")
 
         self.assertEqual((list(signal[0])), self.SIGNAL)
