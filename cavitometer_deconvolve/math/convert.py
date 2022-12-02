@@ -15,11 +15,13 @@ def dBu_to_dBV(dBu):
 
 def V_to_dBu(V):
     """Converts V to dBu."""
+    assert V > 0, f"Number greater than 0 expected, got : {V}"
     return 20 * log10(V / 0.775)
 
 
 def V_to_dBV(V):
     """Converts V to dBu."""
+    assert V > 0, f"Number greater than 0 expected, got : {V}"
     return 20 * log10(V / 1.0)
 
 

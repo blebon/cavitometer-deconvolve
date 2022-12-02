@@ -7,7 +7,7 @@ This module contains the FFT codes.
 
 from __future__ import division
 
-from numpy import fft, empty, ndarray
+from numpy import empty, ndarray
 from pyfftw import interfaces
 
 
@@ -32,7 +32,7 @@ def fast_fourier_transform(time: ndarray, signal: ndarray, units: list) -> tuple
     # w = blackman(N0)
     fourier = interfaces.numpy_fft.fft(signal, norm="ortho")
     # fourier = fft.fft(s, norm="ortho")
-    freq = fft.fftfreq(len(fourier), step)
+    freq = interfaces.numpy_fft.fftfreq(len(fourier), step)
 
     return freq, fourier
 
