@@ -57,7 +57,7 @@ Convert the voltages to pressures using the ``cavitometer_deconvolve.math.deconv
 
     >> from cavitometer_deconvolve.math import deconvolve
     >> time, signal1, signal2 = raw_data.T
-    >> freq, fourier, pressure = deconvolve.deconvolution(time, signal1, units[:2], probe2, None)
+    >> freq, fourier, pressure = deconvolve.deconvolution(time, signal1, units[:2], probe2, 0, None)
     >> pressure.real
     array([-1.06827665e+06, -1.77156427e+01, -3.59243816e+05, ...,
            -1.12191517e+02, -3.59243816e+05, -1.77156427e+01])
