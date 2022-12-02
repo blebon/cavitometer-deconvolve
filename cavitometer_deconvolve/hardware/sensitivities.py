@@ -5,7 +5,8 @@ This file contains the classes for the probes (hydrophones) and pre-amplifiers.
 
 """
 
-from numpy import genfromtxt, ndarray
+from numpy import ndarray
+from pandas import read_csv
 
 
 class Probe:
@@ -21,15 +22,11 @@ class Probe:
         :rtype: None
         """
         self._filename = filename
-        _file_array = genfromtxt(
+        _df = read_csv(
             filename,
-            delimiter=",",
-            skip_header=1,
-            usecols=None,
-            unpack=False,
         )
-        self._frequencies = _file_array[:, 0]
-        self._sensitivities = _file_array[:, 1:]
+        self._frequencies = _df.iloc[:, 0].values
+        self._sensitivities = _df.iloc[:, 1:].values
 
     @property
     def frequencies(self) -> ndarray:
