@@ -20,7 +20,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install dependencies
-        run: pip install pytest numpy pandas pytest-md pytest-emoji
+        run: pip install pytest numpy scipy pyfftw pandas pytest-md pytest-emoji
       - uses: pavelzw/pytest-action@v2
         with:
           emoji: false
