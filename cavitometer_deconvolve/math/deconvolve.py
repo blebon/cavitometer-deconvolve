@@ -14,8 +14,6 @@ from pyfftw import interfaces
 
 from cavitometer_deconvolve.math.FFT import (
     fast_fourier_transform,
-    two_sided_to_one,
-    one_sided_to_two,
 )
 from cavitometer_deconvolve.math.convert import dB_to_V
 from cavitometer_deconvolve.hardware.sensitivities import Probe, PreAmplifier
@@ -71,18 +69,16 @@ def deconvolution(
         )
 
         # 2. Numerator of deconvolution formula
-        numerator = sensitivity_function(frequency[: len(frequency) // 2 + 1]) / (
-            amplification_factor(frequency[: len(frequency) // 2 + 1]) * 1.1
+        numerator = sensitivity_function(frequency) / (
+            amplification_factor(frequency) * 1.1
         )
     else:
-        numerator = sensitivity_function(frequency[: len(frequency) // 2 + 1]) / 1.1
+        numerator = sensitivity_function(frequency) / 1.1
 
-    pressure_fft = 1e3 * two_sided_to_one(fourier.real) / numerator
+    pressure_fft = 1e3 * fourier.real / numerator
     pressure_frequency = linspace(
-        0, frequency[len(frequency) // 2 - 1], len(pressure_fft)
+        0, frequency[-1], pressure_fft.size
     )
-    pressure_signal = interfaces.scipy_fftpack.ifft(
-        one_sided_to_two(pressure_fft)
-    ) * sqrt(len(one_sided_to_two(pressure_fft)))
+    pressure_signal = interfaces.numpy_fft.irfft(pressure_fft) * sqrt(pressure_fft.size)
 
     return pressure_frequency, pressure_fft, pressure_signal

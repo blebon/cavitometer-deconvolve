@@ -2,7 +2,7 @@
 numpy
 scipy
 matplotlib
-mpi4py
+# mpi4py
 pandas
 pyfftw
 

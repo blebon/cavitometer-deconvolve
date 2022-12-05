@@ -8,7 +8,7 @@ with open("requirements.txt", "r") as fh:
 
 setup(
     name="cavitometer-deconvolve",
-    version="0.1",
+    version="0.0.3",
     author="Bruno Lebon",
     author_email="Bruno.Lebon@brunel.ac.uk",
     description="Hydrophone voltage to pressure conversion",

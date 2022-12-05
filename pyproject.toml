@@ -8,7 +8,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "cavitometer-deconvolve"
-version = "0.1"
+version = "0.0.3"
 authors = [
   { name="Bruno Lebon", email="Bruno.Lebon@brunel.ac.uk" },
 ]
@@ -31,3 +31,8 @@ dependencies = {file = ["requirements.txt"]}
 
 [tool.distutils.bdist_wheel]
 universal = true
+
+[tool.pytest.ini_options]
+testpaths = [
+  "tests",
+]
