@@ -1,13 +1,12 @@
-from unittest import TestCase
+import pytest
 
 from os import sep
 
 from cavitometer_deconvolve.hardware.sensitivities import Probe
 
 
-class TestSensitivities(TestCase):
+class TestSensitivities:
     FILENAME = f"data{sep}hardware{sep}Probe_2.csv"
-    PROBE = Probe(FILENAME)
     SENSITIVITIES = [
         -263.6,
         -263.3,
@@ -82,11 +81,19 @@ class TestSensitivities(TestCase):
         -266.7,
     ]
 
+    @pytest.fixture(autouse=True)
     def test_probe(self):
         """Test if probe csv file can be read."""
-        self.PROBE = Probe(self.FILENAME)
+        try:
+            self.PROBE = Probe(self.FILENAME)
+        except Exception as e:
+            assert False, f"Reading {self.FILENAME} raised exception {e}."
 
     def test_get_sensitivities(self):
         sensitivities = self.PROBE.get_sensitivities()
+        sensitivities = sensitivities.tolist()
 
-        self.assertEqual(sensitivities.tolist(), self.SENSITIVITIES)
+        assert len(sensitivities) == len(self.SENSITIVITIES)
+        assert all(
+            list(map(lambda x, y: x == y, sensitivities, self.SENSITIVITIES))
+        )
