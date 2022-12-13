@@ -4,4 +4,5 @@ __all__ = [
     "hardware",
     "math",
     "utils",
+    "GUI",
 ]
