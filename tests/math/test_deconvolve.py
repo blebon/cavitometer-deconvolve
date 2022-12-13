@@ -35,6 +35,26 @@ class TestDeconvolution:
             (-1, -201627.77935355),
         ],
     )
-    def test_Deconvolution(self, test_input, expected):
+    def test_deconvolution(self, test_input, expected):
         """Test if deconvolution fails."""
         assert expected == pytest.approx(self.pressure.real[test_input])
+    
+    @pytest.mark.parametrize(
+        "expected",
+        [
+            1185386.3563065997,
+        ],
+    )
+    def test_max_pressure(self, expected):
+        """Test if maximum measured pressure changed."""
+        assert expected == max(self.pressure.real)
+    
+    @pytest.mark.parametrize(
+        "expected",
+        [
+            370999.3144212581,
+        ],
+    )
+    def test_max_pressure(self, expected):
+        """Test if measured rms pressure changed."""
+        assert expected == sqrt(mean(square(self.pressure.real)))

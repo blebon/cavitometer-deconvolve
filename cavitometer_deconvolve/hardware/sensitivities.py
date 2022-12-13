@@ -6,7 +6,7 @@ This file contains the classes for the probes (hydrophones) and pre-amplifiers.
 """
 
 from numpy import ndarray
-from pandas import read_csv
+from pandas import read_csv, read_excel
 
 
 class Probe:
@@ -18,11 +18,16 @@ class Probe:
     def __init__(self, filename: str) -> None:
         """Initializes the frequency and sensitivity arrays from filename.
 
-        :param filename: the name of the probe sensitivity values csv file
+        :param filename: the name of the probe sensitivity values CSV or Excel file
         :rtype: None
         """
         self._filename = filename
-        _df = read_csv(
+        extension = filename.split('.')[-1]
+        if extension == "csv":
+            read_fun = read_csv
+        elif extension in ["xls", "xlsx"]:
+            read_fun = read_excel
+        _df = read_fun(
             filename,
         )
         self._frequencies = _df.iloc[:, 0].values

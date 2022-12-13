@@ -5,6 +5,7 @@ matplotlib
 # mpi4py
 pandas
 pyfftw
+openpyxl
 
 # Testing
 pytest

@@ -5,48 +5,36 @@ This module contains the codes for reading the raw files.
 
 """
 
-from numpy import genfromtxt, isnan, nan_to_num
+from numpy import isnan, nan_to_num
+from pandas import read_csv, read_excel
 
 
-def get_units(filename: str, extension: str = ".csv") -> tuple:
-    """Read the units from the raw signal file.
-
-    :param filename: name of raw signal file, including path
-    :param extension: extension of raw files (default '.csv')
-    :rtype: tuple
-    """
-    with open(filename, "r") as f:
-        # Units are always in the second line
-        f.readline()
-        u = f.readline()
-        if extension == ".csv":
-            units = u.replace("\n", "").split(",")
-        else:
-            units = u.replace("\r", "").split("\t")
-    return units
-
-
-def read_signal(filename: str, extension: str = ".csv") -> tuple:
+def read_signal(filename: str) -> tuple:
     """Read signals and remove Infs.
 
     :param filename: name of raw signal file, including path
-    :param extension: extension of raw files (default '.csv')
     :rtype: tuple
     """
-    units = get_units(filename, extension=extension)
+    extension = filename.split('.')[-1]
 
-    if extension == ".csv":
-        sep = ","
+    if extension == "csv":
+        read_fun = read_csv
+        drop_indices = [0]
+    elif extension in ["xls", "xlsx"]:
+        read_fun = read_excel
+        drop_indices = [0, 1]
     else:
-        sep = "\t"
-    # Read signal
-    _signals_array = genfromtxt(
+        raise Exception(f"File format {extension} not supported.")
+    
+    _signal_df = read_fun(
         filename,
-        delimiter=sep,
-        skip_header=3,
-        usecols=None,
-        unpack=False,
     )
+
+    units = _signal_df.iloc[0].tolist()
+
+    _signal_df.drop(drop_indices, inplace=True)
+
+    _signals_array = _signal_df.to_numpy(dtype=float)
 
     # Remove Infs if any
     for i in range(1, _signals_array.shape[1]):
