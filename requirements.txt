@@ -7,17 +7,6 @@ pandas
 pyfftw
 openpyxl
 
-# Testing
-pytest
-
-# Documentation
-# sphinx
-# sphinx_rtd_theme
-# sphinxcontrib-bibtex
-# nbsphinx
-# recommonmark
-# sphinx-markdown-tables
-
 # GUI
 PyQT5
 fbs
