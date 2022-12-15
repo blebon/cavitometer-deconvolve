@@ -9,4 +9,4 @@ openpyxl
 
 # GUI
 PyQT5
-fbs
+PyInstaller

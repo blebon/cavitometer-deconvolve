@@ -17,7 +17,7 @@ class TestRead:
     UNITS = ["(ms)", "(mV)", "(mV)"]
 
     def test_units(self, ext):
-        units, _ = read.read_signal(f"{self.FILENAME}.{ext}")
+        _, units, _ = read.read_signal(f"{self.FILENAME}.{ext}")
         assert units == self.UNITS
     
     @pytest.mark.parametrize(
@@ -30,5 +30,5 @@ class TestRead:
         ],
     )
     def test_read_signal(self, test_input, expected, ext):
-        _, signal = read.read_signal(f"{self.FILENAME}.{ext}")
+        _, _, signal = read.read_signal(f"{self.FILENAME}.{ext}")
         assert signal.tolist()[test_input] == expected

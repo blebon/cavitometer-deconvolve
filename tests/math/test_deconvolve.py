@@ -10,7 +10,7 @@ from cavitometer_deconvolve.math import deconvolve
 class TestDeconvolution:
     probe2 = sensitivities.Probe("data/hardware/Probe_2.csv")
     filename = walker.get_raw_files("tests")[0]
-    units, raw_data = read.read_signal(filename)
+    _, units, raw_data = read.read_signal(filename)
     time, signal, _ = raw_data.T
     freq, fourier, pressure = deconvolve.deconvolution(
         time, signal, units[:2], probe2, 0, None

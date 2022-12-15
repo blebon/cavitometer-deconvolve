@@ -30,6 +30,8 @@ def read_signal(filename: str) -> tuple:
         filename,
     )
 
+    assert "time" in _signal_df.columns[0].lower(), "Invalid Probe file. Time expected in header."
+
     units = _signal_df.iloc[0].tolist()
 
     _signal_df.drop(drop_indices, inplace=True)
@@ -42,4 +44,4 @@ def read_signal(filename: str) -> tuple:
         if any(isnan(_signal)):
             _signals_array[:, i] = nan_to_num(_signal)
 
-    return units, _signals_array
+    return _signal_df.columns, units, _signals_array

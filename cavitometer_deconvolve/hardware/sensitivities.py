@@ -27,11 +27,14 @@ class Probe:
             read_fun = read_csv
         elif extension in ["xls", "xlsx"]:
             read_fun = read_excel
+        else:
+            raise Exception(f"File format {extension} not supported.")
         _df = read_fun(
             filename,
         )
         self._frequencies = _df.iloc[:, 0].values
         self._sensitivities = _df.iloc[:, 1:].values
+        assert "frequency" in _df.columns[0].lower(), "Invalid Probe file. Frequency expected in header."
 
     @property
     def frequencies(self) -> ndarray:

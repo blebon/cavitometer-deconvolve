@@ -27,6 +27,8 @@ keywords = ["hydrophone", "cavitometer", "deconvolution"]
 [project.optional-dependencies]
 test = [
   "pytest",
+  "pytest-env",
+  "pytest-qt",
 ]
 doc = [
   "sphinx",
@@ -47,4 +49,7 @@ universal = true
 [tool.pytest.ini_options]
 testpaths = [
   "tests",
+]
+env = [
+    "QT_QPA_PLATFORM=offscreen"
 ]

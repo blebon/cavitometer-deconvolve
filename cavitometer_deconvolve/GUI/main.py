@@ -21,8 +21,8 @@ from PyQt5.QtWidgets import (
     QLabel,
     QLineEdit,
     QListWidget,
+    QMessageBox,
     QPushButton,
-    # QSizePolicy,
     QStyleFactory,
     QRadioButton,
     QTabWidget,
@@ -32,7 +32,6 @@ from PyQt5.QtWidgets import (
     QWidget,
 )
 
-from pandas import read_csv, read_excel
 from numpy import max, mean, square, sqrt
 
 from cavitometer_deconvolve.hardware import sensitivities
@@ -45,6 +44,7 @@ from cavitometer_deconvolve.math import deconvolve
 
 class CavitometerDeconvolveGUI(QDialog):
     def __init__(self, parent=None):
+        """Initialize the widgets."""
         super(CavitometerDeconvolveGUI, self).__init__(parent)
 
         # Set the palette
@@ -64,7 +64,7 @@ class CavitometerDeconvolveGUI(QDialog):
 
         # Create sections
         self.createFileIOGroupBox()  # Choose data and probe files
-        self.createTableWidget()  # View data and probe dataframes
+        self.createTableWidget()  # View data and probe dataframes in tabs
         self.createResultsWidget()  # View results
 
         styleComboBox.activated[str].connect(self.changeStyle)
@@ -87,13 +87,13 @@ class CavitometerDeconvolveGUI(QDialog):
         mainLayout.addWidget(self.fileIOGroupBox, 1, 0, 1, 2)
         mainLayout.addWidget(self.tableGroupBox, 2, 0)
         mainLayout.addWidget(self.resultsGroupBox, 2, 1)
-        mainLayout.setRowStretch(1, 1)
-        mainLayout.setRowStretch(3, 1)
+        mainLayout.setRowStretch(2, 1)
         self.setLayout(mainLayout)
 
         self.setWindowTitle("Cavitometer-Deconvolve")
 
     def changeStyle(self, styleName):
+        """Change the window appearance."""
         QApplication.setStyle(QStyleFactory.create(styleName))
         self.changePalette()
 
@@ -104,62 +104,65 @@ class CavitometerDeconvolveGUI(QDialog):
             QApplication.setPalette(self.originalPalette)
 
     def createFileIOGroupBox(self):
+        """Choose voltage and probe files, channels and hit deconvolve."""
         self.fileIOGroupBox = QGroupBox("Select voltage and probe files")
         self.fileIOGroupBox.setCheckable(True)
         self.fileIOGroupBox.setChecked(True)
 
-        # Select the csv file and show in line edit
-
+        # Select the data file and show in line edit
         self.dataFileLineEdit = QLineEdit("")
+        self.dataFileLineEdit.setEnabled(False)
 
-        selectDataFilePushButton = QPushButton("Select data file")
+        selectDataFilePushButton = QPushButton("Select &voltage file")
         selectDataFilePushButton.setDefault(True)
         selectDataFilePushButton.clicked.connect(self.openDataFile)
 
         # Select probe sensitivities
-
         self.probeLineEdit = QLineEdit("")
-
-        selectProbePushButton = QPushButton("Select probe sensitivities file")
+        self.probeLineEdit.setEnabled(False)
+        
+        selectProbePushButton = QPushButton("Select &probe sensitivities file")
         selectProbePushButton.setDefault(True)
         selectProbePushButton.clicked.connect(self.openProbeFile)
 
+        # Select channel in voltage file
         self.channelGroupBox = QGroupBox("Channel selection")
         channelLayout = QHBoxLayout()
         self.channelListWidget = QListWidget()
         channelLayout.addWidget(self.channelListWidget)
         self.channelGroupBox.setLayout(channelLayout)
         self.channelGroupBox.setEnabled(False)
-        self.selectedChannel = 1
+        self.selectedChannel = 1 # Default is 1
         self.channelListWidget.itemClicked.connect(self.setChannel)
 
+        # Select probe position
         self.probeRadioGroupBox = QGroupBox("Probe position")
         probeRadioLayout = QHBoxLayout()
         self.probe_position = 0
-        self.b0 = QRadioButton("Vertical")
+        self.b0 = QRadioButton("&Vertical")
         self.b0.setChecked(True)
         self.b0.toggled.connect(lambda: self.selectProbePosition(self.b0))
         probeRadioLayout.addWidget(self.b0)
 
-        self.b1 = QRadioButton("45 degrees")
-        self.b0.setChecked(False)
+        self.b1 = QRadioButton("45 &degrees")
+        self.b1.setChecked(False)
         self.b1.toggled.connect(lambda: self.selectProbePosition(self.b1))
-
-        probeRadioLayout.addWidget(self.b0)
         probeRadioLayout.addWidget(self.b1)
+
         self.probeRadioGroupBox.setLayout(probeRadioLayout)
         self.probeRadioGroupBox.setEnabled(False)
 
-        self.can_deconvolve = False
-        self.valid_data_file = False
-        self.valid_probe_file = False
-        self.deconvolvePushButton = QPushButton("Deconvolve")
+        # Variables to enable or disable relevant sections
+        self.valid_data_file = False  # Enable or disable channel selection
+        self.valid_probe_file = False # Enable or disable probe position selection
+        self.can_deconvolve = False   # Enable or disable deconvolve push button
+
+        # Button to run deconvolution
+        self.deconvolvePushButton = QPushButton("&Deconvolve")
         self.deconvolvePushButton.setDefault(True)
         self.deconvolvePushButton.setEnabled(self.can_deconvolve)
         self.deconvolvePushButton.clicked.connect(self.deconvolve)
-
-        # Button to run deconvolution
-
+        
         layout = QGridLayout()
         layout.addWidget(self.dataFileLineEdit, 1, 1)
         layout.addWidget(selectDataFilePushButton, 1, 2, 1, 2)
@@ -169,9 +172,21 @@ class CavitometerDeconvolveGUI(QDialog):
         layout.addWidget(self.probeRadioGroupBox, 3, 2)
         layout.addWidget(self.deconvolvePushButton, 3, 3)
         self.fileIOGroupBox.setLayout(layout)
+    
+    def invalidDataFile(self):
+        """If data file is invalid, disable relevant sections."""
+        self.valid_data_file = False
+        self.dataTableWidget.setRowCount(0)
+        self.dataTableWidget.setColumnCount(0)
+        self.dataFileLineEdit.setText("")
+        self.channelListWidget.clear()
+        self.enableOrDisableDeconvolveButton()
 
     def openDataFile(self):
-        # Open filename using QT dialog
+        """Open filename using QT dialog."""
+        # Reset fields first
+        self.invalidDataFile()
+
         dataFileSelector = QFileDialog()
         filenames = dataFileSelector.getOpenFileName(
             self,
@@ -180,47 +195,58 @@ class CavitometerDeconvolveGUI(QDialog):
             "Data files (*.csv *.xls *.xlsx)",
         )
 
+        """If dialog closed without selecting a file"""
         if not filenames[0]:
-            self.valid_data_file = False
-            self.dataFileLineEdit.setText("")
-            self.channelListWidget.clear()
-            self.enableOrDisableDeconvolveButton()
             return None
 
         # Show path in the line edit box
-        self.filename = filenames[0]
-        self.dataFileLineEdit.setText(self.filename)
+        self.voltageFilename = filenames[0]
+        self.dataFileLineEdit.setText(self.voltageFilename)
 
-        # Read the data into a pandas dataframe
-        extension = self.filename.split(".")[-1]
-        if extension == "csv":
-            self.data = read_csv(self.filename, low_memory=False)
-        else:
-            self.data = read_excel(self.filename)
-
-        self.channelListWidget.addItems(self.data.columns[1:])
+        # Read the data
+        try:
+            columns, self.units, self.raw_data = read_signal(self.voltageFilename)
+        except Exception as e:
+            invalidDataFile = QMessageBox()
+            invalidDataFile.setText(f"Error: {e}")
+            invalidDataFile.exec()
+            return None
+  
+        self.channelListWidget.addItems(columns[1:])
 
         # Display in the bottom left table widget
-        self.dataTableWidget.setColumnCount(self.data.shape[1])
-        self.dataTableWidget.setRowCount(self.data.shape[0])
+        self.dataTableWidget.setColumnCount(self.raw_data.shape[1])
+        self.dataTableWidget.setRowCount(self.raw_data.shape[0] + 2)
 
-        for column, columnvalue in enumerate(self.data):
+        for column, columnvalue in enumerate(columns):
             # Display header in first row
             self.dataTableWidget.setItem(0, column, QTableWidgetItem(columnvalue))
+            self.dataTableWidget.setItem(1, column, QTableWidgetItem(self.units[column]))
             # Display the rest of the data in all the rows below
-            for row, value in enumerate(self.data[columnvalue]):
+            for row, value in enumerate(self.raw_data[:, column]):
                 self.item = QTableWidgetItem(str(value))
                 # row + 1 because header is at row 0
-                self.dataTableWidget.setItem(row + 1, column, self.item)
+                self.dataTableWidget.setItem(row + 2, column, self.item)
                 self.item.setFlags(Qt.ItemIsEnabled)
 
         self.valid_data_file = True
         self.enableOrDisableDeconvolveButton()
 
-    def setChannel(self, item):
+    def setChannel(self):
+        """Update selected channel flag when list clicked."""
         self.selectedChannel = self.channelListWidget.currentRow() + 1
+    
+    def invalidProbeFile(self):
+        """If probe file is invalid, disable relevant sections."""
+        self.valid_probe_file = False
+        self.probeTableWidget.setRowCount(0)
+        self.probeTableWidget.setColumnCount(0)
+        self.probeLineEdit.setText("")
+        self.enableOrDisableDeconvolveButton()
 
     def openProbeFile(self):
+        self.invalidProbeFile()
+
         # Open filename using QT dialog
         dataFileSelector = QFileDialog()
         filenames = dataFileSelector.getOpenFileName(
@@ -229,15 +255,20 @@ class CavitometerDeconvolveGUI(QDialog):
             "",
             "Data files (*.csv *.xls *.xlsx)",
         )
+
+        # If dialog is cancelled.
         if not filenames[0]:
-            self.probeLineEdit.setText("")
-            self.valid_probe_file = False
-            self.enableOrDisableDeconvolveButton()
             return None
+       
         # Show path in the line edit box
+        try:
+            self.probe = sensitivities.Probe(filenames[0])
+        except Exception as e:
+            invalidProbeFile = QMessageBox()
+            invalidProbeFile.setText(f"Error: {e}")
+            invalidProbeFile.exec()
+            return None
         self.probeLineEdit.setText(filenames[0])
-        self.probe = sensitivities.Probe(filenames[0])
-        self.probe_position = 0
 
         # Display in the bottom left table widget
         self.probeTableWidget.setColumnCount(2)
@@ -254,29 +285,30 @@ class CavitometerDeconvolveGUI(QDialog):
 
         # Display sensitivities
         self.updateSensitivitiesColumn()
-
         self.valid_probe_file = True
         self.enableOrDisableDeconvolveButton()
 
     def enableOrDisableDeconvolveButton(self):
+        """Enable or disable group boxes."""
         self.can_deconvolve = self.valid_data_file and self.valid_probe_file
         self.channelGroupBox.setEnabled(self.valid_data_file)
         self.probeRadioGroupBox.setEnabled(self.valid_probe_file)
         self.deconvolvePushButton.setEnabled(self.can_deconvolve)
 
     def selectProbePosition(self, b):
-        if b.text() == "Vertical":
-            if b.isChecked() == True:
+        if b.text() == "&Vertical":
+            if b.isChecked():
                 self.probe_position = 0
 
-        if b.text() == "45 degrees":
-            if b.isChecked() == True:
+        if b.text() == "45 &degrees":
+            if b.isChecked():
                 self.probe_position = 1
 
         # Update sensitivities
         self.updateSensitivitiesColumn()
 
     def updateSensitivitiesColumn(self):
+        """Repopulate sensitivities column when radio button is toggled."""
         self.probeTableWidget.setItem(0, 1, QTableWidgetItem("Sensitivities (dB)"))
         # Display the rest of the data in all the rows below
         for row, value in enumerate(self.probe.get_sensitivities(self.probe_position)):
@@ -359,9 +391,6 @@ class CavitometerDeconvolveGUI(QDialog):
         self.rmsPressureLineEdit.setText(f"{rms_p:.1f}")
 
     def deconvolve(self):
-        # Open filename using QT dialog
-        self.units, self.raw_data = read_signal(self.filename)
-
         time = self.raw_data[:, 0].T
         signal = self.raw_data[:, self.selectedChannel].T
         freq, fourier, pressure = deconvolve.deconvolution(
