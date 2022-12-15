@@ -1,0 +1,169 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Examples &#8212; cavitometer-deconvolve 0.4.1 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Code summary" href="code.html" />
+    <link rel="prev" title="Theory" href="theory.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="examples">
+<h1>Examples<a class="headerlink" href="#examples" title="Permalink to this heading">¶</a></h1>
+<section id="read-calibration-data">
+<h2>Read calibration data<a class="headerlink" href="#read-calibration-data" title="Permalink to this heading">¶</a></h2>
+<p>Use the <code class="docutils literal notranslate"><span class="pre">cavitometer_deconvolve.hardware.sensitivities.Probe()</span></code> function to read the probe’s sensitivity values.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span> <span class="kn">from</span> <span class="nn">cavitometer_deconvolve.hardware</span> <span class="kn">import</span> <span class="n">sensitivities</span>
+<span class="o">&gt;&gt;</span> <span class="n">probe2</span> <span class="o">=</span> <span class="n">sensitivities</span><span class="o">.</span><span class="n">Probe</span><span class="p">(</span><span class="s1">&#39;data/hardware/Probe_2.csv&#39;</span><span class="p">)</span>
+<span class="o">&gt;&gt;</span> <span class="n">probe2</span><span class="o">.</span><span class="n">get_sensitivities</span><span class="p">()</span>
+<span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mf">263.6</span><span class="p">,</span> <span class="o">-</span><span class="mf">263.3</span><span class="p">,</span> <span class="o">-</span><span class="mf">263.8</span><span class="p">,</span> <span class="o">-</span><span class="mf">264.8</span><span class="p">,</span> <span class="o">-</span><span class="mf">264.8</span><span class="p">,</span> <span class="o">-</span><span class="mf">264.9</span><span class="p">,</span> <span class="o">-</span><span class="mf">266.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">266.4</span><span class="p">,</span>
+       <span class="o">-</span><span class="mf">267.4</span><span class="p">,</span> <span class="o">-</span><span class="mf">270.1</span><span class="p">,</span> <span class="o">-</span><span class="mf">277.3</span><span class="p">,</span> <span class="o">-</span><span class="mf">268.3</span><span class="p">,</span> <span class="o">-</span><span class="mf">263.2</span><span class="p">,</span> <span class="o">-</span><span class="mf">261.6</span><span class="p">,</span> <span class="o">-</span><span class="mf">262.7</span><span class="p">,</span> <span class="o">-</span><span class="mf">265.7</span><span class="p">,</span>
+       <span class="o">-</span><span class="mf">273.2</span><span class="p">,</span> <span class="o">-</span><span class="mf">271.3</span><span class="p">,</span> <span class="o">-</span><span class="mf">270.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">269.4</span><span class="p">,</span> <span class="o">-</span><span class="mf">265.7</span><span class="p">,</span> <span class="o">-</span><span class="mf">262.8</span><span class="p">,</span> <span class="o">-</span><span class="mf">262.3</span><span class="p">,</span> <span class="o">-</span><span class="mf">263.5</span><span class="p">,</span>
+       <span class="o">-</span><span class="mf">268.8</span><span class="p">,</span> <span class="o">-</span><span class="mf">283.3</span><span class="p">,</span> <span class="o">-</span><span class="mf">274.2</span><span class="p">,</span> <span class="o">-</span><span class="mf">271.</span> <span class="p">,</span> <span class="o">-</span><span class="mf">278.6</span><span class="p">,</span> <span class="o">-</span><span class="mf">275.1</span><span class="p">,</span> <span class="o">-</span><span class="mf">267.6</span><span class="p">,</span> <span class="o">-</span><span class="mf">265.3</span><span class="p">,</span>
+       <span class="o">-</span><span class="mf">267.2</span><span class="p">,</span> <span class="o">-</span><span class="mf">274.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">277.</span> <span class="p">,</span> <span class="o">-</span><span class="mf">267.3</span><span class="p">,</span> <span class="o">-</span><span class="mf">263.8</span><span class="p">,</span> <span class="o">-</span><span class="mf">262.3</span><span class="p">,</span> <span class="o">-</span><span class="mf">262.1</span><span class="p">,</span> <span class="o">-</span><span class="mf">262.8</span><span class="p">,</span>
+       <span class="o">-</span><span class="mf">265.</span> <span class="p">,</span> <span class="o">-</span><span class="mf">268.7</span><span class="p">,</span> <span class="o">-</span><span class="mf">273.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">278.6</span><span class="p">,</span> <span class="o">-</span><span class="mf">276.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">271.7</span><span class="p">,</span> <span class="o">-</span><span class="mf">267.9</span><span class="p">,</span> <span class="o">-</span><span class="mf">265.2</span><span class="p">,</span>
+       <span class="o">-</span><span class="mf">263.7</span><span class="p">,</span> <span class="o">-</span><span class="mf">263.2</span><span class="p">,</span> <span class="o">-</span><span class="mf">264.1</span><span class="p">,</span> <span class="o">-</span><span class="mf">266.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">272.2</span><span class="p">,</span> <span class="o">-</span><span class="mf">281.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">275.1</span><span class="p">,</span> <span class="o">-</span><span class="mf">270.8</span><span class="p">,</span>
+       <span class="o">-</span><span class="mf">269.1</span><span class="p">,</span> <span class="o">-</span><span class="mf">268.2</span><span class="p">,</span> <span class="o">-</span><span class="mf">267.8</span><span class="p">,</span> <span class="o">-</span><span class="mf">267.8</span><span class="p">,</span> <span class="o">-</span><span class="mf">269.6</span><span class="p">,</span> <span class="o">-</span><span class="mf">273.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">277.9</span><span class="p">,</span> <span class="o">-</span><span class="mf">279.</span> <span class="p">,</span>
+       <span class="o">-</span><span class="mf">275.1</span><span class="p">,</span> <span class="o">-</span><span class="mf">271.9</span><span class="p">,</span> <span class="o">-</span><span class="mf">267.8</span><span class="p">,</span> <span class="o">-</span><span class="mf">264.7</span><span class="p">,</span> <span class="o">-</span><span class="mf">263.6</span><span class="p">,</span> <span class="o">-</span><span class="mf">264.1</span><span class="p">,</span> <span class="o">-</span><span class="mf">266.7</span><span class="p">])</span>
+</pre></div>
+</div>
+</section>
+<section id="read-voltage-signal">
+<h2>Read voltage signal<a class="headerlink" href="#read-voltage-signal" title="Permalink to this heading">¶</a></h2>
+<p>Read voltage signals using the <code class="docutils literal notranslate"><span class="pre">cavitometer_deconvolve.utils.read.read_signal()</span></code> function.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span> <span class="kn">from</span> <span class="nn">cavitometer_deconvolve.utils</span> <span class="kn">import</span> <span class="n">read</span><span class="p">,</span> <span class="n">walker</span>
+<span class="o">&gt;&gt;</span> <span class="n">filename</span> <span class="o">=</span> <span class="n">walker</span><span class="o">.</span><span class="n">get_raw_files</span><span class="p">(</span><span class="s1">&#39;tests&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<span class="o">&gt;&gt;</span> <span class="n">_</span><span class="p">,</span> <span class="n">units</span><span class="p">,</span> <span class="n">raw_data</span> <span class="o">=</span> <span class="n">read</span><span class="o">.</span><span class="n">read_signal</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+<span class="o">&gt;&gt;</span> <span class="n">units</span>
+<span class="p">[</span><span class="s1">&#39;(ms)&#39;</span><span class="p">,</span> <span class="s1">&#39;(mV)&#39;</span><span class="p">,</span> <span class="s1">&#39;(mV)&#39;</span><span class="p">]</span>
+<span class="o">&gt;&gt;</span> <span class="n">raw_data</span>
+<span class="n">array</span><span class="p">([[</span> <span class="mf">0.00000000e+00</span><span class="p">,</span> <span class="o">-</span><span class="mf">4.48541100e+01</span><span class="p">,</span> <span class="o">-</span><span class="mf">5.18862200e-01</span><span class="p">],</span>
+       <span class="p">[</span> <span class="mf">2.00000000e-04</span><span class="p">,</span> <span class="o">-</span><span class="mf">5.38395800e+01</span><span class="p">,</span> <span class="o">-</span><span class="mf">4.51715300e-01</span><span class="p">],</span>
+       <span class="p">[</span> <span class="mf">4.00000000e-04</span><span class="p">,</span> <span class="o">-</span><span class="mf">5.19838800e+01</span><span class="p">,</span> <span class="o">-</span><span class="mf">6.95885700e-01</span><span class="p">],</span>
+       <span class="o">...</span><span class="p">,</span>
+       <span class="p">[</span> <span class="mf">2.00019988e+00</span><span class="p">,</span>  <span class="mf">1.47723100e+01</span><span class="p">,</span> <span class="o">-</span><span class="mf">7.99658100e-01</span><span class="p">],</span>
+       <span class="p">[</span> <span class="mf">2.00039988e+00</span><span class="p">,</span>  <span class="mf">2.18776700e+01</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.10487100e+00</span><span class="p">],</span>
+       <span class="p">[</span> <span class="mf">2.00059988e+00</span><span class="p">,</span>  <span class="mf">2.98376300e+01</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.10487100e+00</span><span class="p">]])</span>
+</pre></div>
+</div>
+</section>
+<section id="deconvolve-signal">
+<h2>Deconvolve signal<a class="headerlink" href="#deconvolve-signal" title="Permalink to this heading">¶</a></h2>
+<p>Convert the voltages to pressures using the <code class="docutils literal notranslate"><span class="pre">cavitometer_deconvolve.math.deconvolve.deconvolution()</span></code> function.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;&gt;</span> <span class="kn">from</span> <span class="nn">cavitometer_deconvolve.math</span> <span class="kn">import</span> <span class="n">deconvolve</span>
+<span class="o">&gt;&gt;</span> <span class="n">time</span><span class="p">,</span> <span class="n">signal1</span><span class="p">,</span> <span class="n">signal2</span> <span class="o">=</span> <span class="n">raw_data</span><span class="o">.</span><span class="n">T</span>
+<span class="o">&gt;&gt;</span> <span class="n">freq</span><span class="p">,</span> <span class="n">fourier</span><span class="p">,</span> <span class="n">pressure</span> <span class="o">=</span> <span class="n">deconvolve</span><span class="o">.</span><span class="n">deconvolution</span><span class="p">(</span><span class="n">time</span><span class="p">,</span> <span class="n">signal1</span><span class="p">,</span> <span class="n">units</span><span class="p">[:</span><span class="mi">2</span><span class="p">],</span> <span class="n">probe2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+<span class="o">&gt;&gt;</span> <span class="n">pressure</span><span class="o">.</span><span class="n">real</span>
+<span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mf">754338.53169751</span><span class="p">,</span> <span class="o">-</span><span class="mf">201627.77935355</span><span class="p">,</span> <span class="o">-</span><span class="mf">252975.84913598</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span>
+       <span class="o">-</span><span class="mf">220523.88854895</span><span class="p">,</span> <span class="o">-</span><span class="mf">252975.84913598</span><span class="p">,</span> <span class="o">-</span><span class="mf">201627.77935355</span><span class="p">])</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">cavitometer-deconvolve</a></h1>
+
+
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="theory.html">Theory</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="code.html">Code summary</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="theory.html" title="previous chapter">Theory</a></li>
+      <li>Next: <a href="code.html" title="next chapter">Code summary</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2022, Bruno Lebon.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.3.0</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/examples.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/blebon/cavitometer-deconvolve" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>
