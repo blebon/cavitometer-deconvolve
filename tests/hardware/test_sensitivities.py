@@ -81,6 +81,14 @@ class TestSensitivities:
         -266.7,
     ]
 
+    def test_exception_if_wrong_file_format(self):
+        with pytest.raises(Exception):
+            _ = Probe(f"data{sep}hardware{sep}Probe_2.dat")
+
+    def test_assertion_error_if_frequency_not_found(self):
+        with pytest.raises(AssertionError):
+            _ = Probe(f"tests{sep}Measurements{sep}Two_Probes.csv")
+
     @pytest.fixture(autouse=True)
     def test_probe(self):
         """Test if probe csv file can be read."""
@@ -94,6 +102,4 @@ class TestSensitivities:
         sensitivities = sensitivities.tolist()
 
         assert len(sensitivities) == len(self.SENSITIVITIES)
-        assert all(
-            list(map(lambda x, y: x == y, sensitivities, self.SENSITIVITIES))
-        )
+        assert all(list(map(lambda x, y: x == y, sensitivities, self.SENSITIVITIES)))

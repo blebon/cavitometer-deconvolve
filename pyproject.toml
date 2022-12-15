@@ -8,7 +8,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "cavitometer-deconvolve"
-version = "0.4"
+version = "0.4.1"
 authors = [
   { name="Bruno Lebon", email="Bruno.Lebon@brunel.ac.uk" },
 ]

@@ -34,7 +34,7 @@ Read voltage signals using the ``cavitometer_deconvolve.utils.read.read_signal()
 
     >> from cavitometer_deconvolve.utils import read, walker
     >> filename = walker.get_raw_files('tests')[0]
-    >> units, raw_data = read.read_signal(filename)
+    >> _, units, raw_data = read.read_signal(filename)
     >> units
     ['(ms)', '(mV)', '(mV)']
     >> raw_data
