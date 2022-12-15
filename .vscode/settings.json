@@ -1,0 +1,45 @@
+{
+    "esbonio.sphinx.confDir": "",
+    // Python
+    "python.autoComplete.extraPaths": [
+        "${workspaceFolder}",
+    ],
+    "python.terminal.activateEnvironment": true,
+    "python.terminal.activateEnvInCurrentTerminal": true,
+    "python.testing.autoTestDiscoverOnSaveEnabled": true,
+    "python.testing.pytestEnabled": true,
+    "python.testing.pytestArgs": [
+        "tests",
+    ],
+    // Terminal
+    "terminal.integrated.profiles.windows": {
+        "PowerShell": {
+            "source": "PowerShell",
+            "icon": "terminal-powershell"
+        },
+        "Command Prompt": {
+            "path": [
+                "${env:windir}\\Sysnative\\cmd.exe",
+                "${env:windir}\\System32\\cmd.exe"
+            ],
+            "args": [],
+            "icon": "terminal-cmd"
+        },
+        "Developer Command Prompt for VS 2019": {
+            "path": [
+                "${env:windir}\\Sysnative\\cmd.exe",
+                "${env:windir}\\System32\\cmd.exe"
+            ],
+            "args": [
+                "/k",
+                "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Professional\\Common7\\Tools\\VsDevCmd.bat"
+            ],
+            "icon": "terminal-cmd"
+        },
+        "Git Bash": {
+            "source": "Git Bash"
+        }
+    },
+    "terminal.integrated.defaultProfile.windows": "Command Prompt",
+    "terminal.integrated.shellIntegration.enabled": true,
+}

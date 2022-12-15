@@ -61,5 +61,5 @@ venv/
 ENV/
 
 # IDE
-.vscode/
+# .vscode/
 .idea/

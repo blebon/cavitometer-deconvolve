@@ -21,6 +21,7 @@ from PyQt5.QtWidgets import (
     QLabel,
     QLineEdit,
     QListWidget,
+    QMainWindow,
     QMessageBox,
     QPushButton,
     QStyleFactory,
@@ -32,17 +33,55 @@ from PyQt5.QtWidgets import (
     QWidget,
 )
 
-from numpy import max, mean, square, sqrt
+from numpy import max, mean, square, sqrt, abs
 
 from cavitometer_deconvolve.hardware import sensitivities
 from cavitometer_deconvolve.utils.read import read_signal
 from cavitometer_deconvolve.math import deconvolve
 
-# from matplotlib.backends.backend_qt5agg import FigureCanvasAgg as FigureCanvas
-# from matplotlib.figure import Figure
+import matplotlib
+
+matplotlib.use("Qt5Agg")
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg, NavigationToolbar2QT
+from matplotlib.pyplot import subplots
 
 
-class CavitometerDeconvolveGUI(QDialog):
+class ResultsCanvas(FigureCanvasQTAgg):
+    def __init__(self, parent=None, width=5, height=4, dpi=100):
+        figure, self.axes = subplots(nrows=1, ncols=2, figsize=(width, height), dpi=dpi)
+        super(ResultsCanvas, self).__init__(figure)
+
+
+class ResultsWindow(QDialog):
+    def __init__(self, parent=None, *args, **kwargs):
+        super(ResultsWindow, self).__init__(parent, *args, **kwargs)
+
+        resultsCanvas = ResultsCanvas(self, width=5, height=4, dpi=100)
+
+        paxes, faxes = resultsCanvas.axes.flat
+        paxes.plot(parent.time, parent.signal)
+        paxes.set_xlabel("Time (s)")
+        paxes.set_ylabel("Pressure (kPa)")
+        paxes.set_title("Pressure")
+        faxes.plot(parent.freq / 1e3, abs(parent.fourier))
+        faxes.set_xlabel("Frequency (kHz)")
+        faxes.set_ylabel("Fourier")
+        faxes.set_title("FFT")
+        resultsCanvas.draw()
+
+        toolbar = NavigationToolbar2QT(resultsCanvas, self)
+
+        layout = QVBoxLayout()
+        layout.addWidget(toolbar)
+        layout.addWidget(resultsCanvas)
+
+        self.setLayout(layout)
+        self.setWindowTitle("Deconvolution results")
+
+        self.show()
+
+
+class CavitometerDeconvolveGUI(QMainWindow):
     def __init__(self, parent=None):
         """Initialize the widgets."""
         super(CavitometerDeconvolveGUI, self).__init__(parent)
@@ -88,7 +127,10 @@ class CavitometerDeconvolveGUI(QDialog):
         mainLayout.addWidget(self.tableGroupBox, 2, 0)
         mainLayout.addWidget(self.resultsGroupBox, 2, 1)
         mainLayout.setRowStretch(2, 1)
-        self.setLayout(mainLayout)
+
+        widget = QWidget()
+        widget.setLayout(mainLayout)
+        self.setCentralWidget(widget)
 
         self.setWindowTitle("Cavitometer-Deconvolve")
 
@@ -120,7 +162,7 @@ class CavitometerDeconvolveGUI(QDialog):
         # Select probe sensitivities
         self.probeLineEdit = QLineEdit("")
         self.probeLineEdit.setEnabled(False)
-        
+
         selectProbePushButton = QPushButton("Select &probe sensitivities file")
         selectProbePushButton.setDefault(True)
         selectProbePushButton.clicked.connect(self.openProbeFile)
@@ -132,7 +174,7 @@ class CavitometerDeconvolveGUI(QDialog):
         channelLayout.addWidget(self.channelListWidget)
         self.channelGroupBox.setLayout(channelLayout)
         self.channelGroupBox.setEnabled(False)
-        self.selectedChannel = 1 # Default is 1
+        self.selectedChannel = 1  # Default is 1
         self.channelListWidget.itemClicked.connect(self.setChannel)
 
         # Select probe position
@@ -154,15 +196,15 @@ class CavitometerDeconvolveGUI(QDialog):
 
         # Variables to enable or disable relevant sections
         self.valid_data_file = False  # Enable or disable channel selection
-        self.valid_probe_file = False # Enable or disable probe position selection
-        self.can_deconvolve = False   # Enable or disable deconvolve push button
+        self.valid_probe_file = False  # Enable or disable probe position selection
+        self.can_deconvolve = False  # Enable or disable deconvolve push button
 
         # Button to run deconvolution
         self.deconvolvePushButton = QPushButton("&Deconvolve")
         self.deconvolvePushButton.setDefault(True)
         self.deconvolvePushButton.setEnabled(self.can_deconvolve)
         self.deconvolvePushButton.clicked.connect(self.deconvolve)
-        
+
         layout = QGridLayout()
         layout.addWidget(self.dataFileLineEdit, 1, 1)
         layout.addWidget(selectDataFilePushButton, 1, 2, 1, 2)
@@ -172,7 +214,7 @@ class CavitometerDeconvolveGUI(QDialog):
         layout.addWidget(self.probeRadioGroupBox, 3, 2)
         layout.addWidget(self.deconvolvePushButton, 3, 3)
         self.fileIOGroupBox.setLayout(layout)
-    
+
     def invalidDataFile(self):
         """If data file is invalid, disable relevant sections."""
         self.valid_data_file = False
@@ -211,7 +253,7 @@ class CavitometerDeconvolveGUI(QDialog):
             invalidDataFile.setText(f"Error: {e}")
             invalidDataFile.exec()
             return None
-  
+
         self.channelListWidget.addItems(columns[1:])
 
         # Display in the bottom left table widget
@@ -221,7 +263,9 @@ class CavitometerDeconvolveGUI(QDialog):
         for column, columnvalue in enumerate(columns):
             # Display header in first row
             self.dataTableWidget.setItem(0, column, QTableWidgetItem(columnvalue))
-            self.dataTableWidget.setItem(1, column, QTableWidgetItem(self.units[column]))
+            self.dataTableWidget.setItem(
+                1, column, QTableWidgetItem(self.units[column])
+            )
             # Display the rest of the data in all the rows below
             for row, value in enumerate(self.raw_data[:, column]):
                 self.item = QTableWidgetItem(str(value))
@@ -235,7 +279,7 @@ class CavitometerDeconvolveGUI(QDialog):
     def setChannel(self):
         """Update selected channel flag when list clicked."""
         self.selectedChannel = self.channelListWidget.currentRow() + 1
-    
+
     def invalidProbeFile(self):
         """If probe file is invalid, disable relevant sections."""
         self.valid_probe_file = False
@@ -259,7 +303,7 @@ class CavitometerDeconvolveGUI(QDialog):
         # If dialog is cancelled.
         if not filenames[0]:
             return None
-       
+
         # Show path in the line edit box
         try:
             self.probe = sensitivities.Probe(filenames[0])
@@ -391,15 +435,20 @@ class CavitometerDeconvolveGUI(QDialog):
         self.rmsPressureLineEdit.setText(f"{rms_p:.1f}")
 
     def deconvolve(self):
-        time = self.raw_data[:, 0].T
-        signal = self.raw_data[:, self.selectedChannel].T
-        freq, fourier, pressure = deconvolve.deconvolution(
-            time, signal, self.units[:2], self.probe, self.probe_position, None
+        self.time = self.raw_data[:, 0].T
+        self.signal = self.raw_data[:, self.selectedChannel].T
+        self.freq, self.fourier, self.pressure = deconvolve.deconvolution(
+            self.time,
+            self.signal,
+            self.units[:2],
+            self.probe,
+            self.probe_position,
+            None,
         )
 
         # Display in the bottom left table widget
         self.resultsTableWidget.setColumnCount(2)
-        self.resultsTableWidget.setRowCount(len(time) + 1)
+        self.resultsTableWidget.setRowCount(len(self.time) + 1)
 
         for column, columnvalue in enumerate(
             [f"Time {self.units[0]}", "Pressure (Pa)"]
@@ -407,20 +456,22 @@ class CavitometerDeconvolveGUI(QDialog):
             # Display header in first row
             self.resultsTableWidget.setItem(0, column, QTableWidgetItem(columnvalue))
             # Display the rest of the data in all the rows below
-            for row, value in enumerate(time):
+            for row, value in enumerate(self.time):
                 if column == 0:
-                    value = time[row]
+                    value = self.time[row]
                 else:
-                    value = pressure.real[row]
+                    value = self.pressure.real[row]
                 self.item = QTableWidgetItem(str(value))
                 # row + 1 because header is at row 0
                 self.resultsTableWidget.setItem(row + 1, column, self.item)
                 self.item.setFlags(Qt.ItemIsEnabled)
 
         self.populateStatisticsGroupBox(
-            max(pressure.real) / 1e3,
-            sqrt(mean(square(pressure.real))) / 1e3,
+            max(self.pressure.real) / 1e3,
+            sqrt(mean(square(self.pressure.real))) / 1e3,
         )
+
+        figure = ResultsWindow(self)
 
 
 def main():
