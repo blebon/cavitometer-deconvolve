@@ -5,8 +5,6 @@ This module contains the codes for a simple GUI.
 
 """
 
-from sys import argv, exit
-
 from PyQt5.QtCore import Qt
 
 from PyQt5.QtWidgets import (
@@ -33,52 +31,13 @@ from PyQt5.QtWidgets import (
     QWidget,
 )
 
-from numpy import max, mean, square, sqrt, abs
+from numpy import max, mean, square, sqrt
 
 from cavitometer_deconvolve.hardware import sensitivities
 from cavitometer_deconvolve.utils.read import read_signal
 from cavitometer_deconvolve.math import deconvolve
 
-import matplotlib
-
-matplotlib.use("Qt5Agg")
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg, NavigationToolbar2QT
-from matplotlib.pyplot import subplots
-
-
-class ResultsCanvas(FigureCanvasQTAgg):
-    def __init__(self, parent=None, width=5, height=4, dpi=100):
-        figure, self.axes = subplots(nrows=1, ncols=2, figsize=(width, height), dpi=dpi)
-        super(ResultsCanvas, self).__init__(figure)
-
-
-class ResultsWindow(QDialog):
-    def __init__(self, parent=None, *args, **kwargs):
-        super(ResultsWindow, self).__init__(parent, *args, **kwargs)
-
-        resultsCanvas = ResultsCanvas(self, width=5, height=4, dpi=100)
-
-        paxes, faxes = resultsCanvas.axes.flat
-        paxes.plot(parent.time, parent.signal)
-        paxes.set_xlabel("Time (s)")
-        paxes.set_ylabel("Pressure (kPa)")
-        paxes.set_title("Pressure")
-        faxes.plot(parent.freq / 1e3, abs(parent.fourier))
-        faxes.set_xlabel("Frequency (kHz)")
-        faxes.set_ylabel("Fourier")
-        faxes.set_title("FFT")
-        resultsCanvas.draw()
-
-        toolbar = NavigationToolbar2QT(resultsCanvas, self)
-
-        layout = QVBoxLayout()
-        layout.addWidget(toolbar)
-        layout.addWidget(resultsCanvas)
-
-        self.setLayout(layout)
-        self.setWindowTitle("Deconvolution results")
-
-        self.show()
+from cavitometer_deconvolve.gui.plots import ResultsWindow
 
 
 class CavitometerDeconvolveGUI(QMainWindow):
@@ -256,10 +215,16 @@ class CavitometerDeconvolveGUI(QMainWindow):
 
         self.channelListWidget.addItems(columns[1:])
 
+        self.populateDataTableWidget(columns)
+
+        self.valid_data_file = True
+        self.enableOrDisableDeconvolveButton()
+
+    def populateDataTableWidget(self, columns):
         # Display in the bottom left table widget
         self.dataTableWidget.setColumnCount(self.raw_data.shape[1])
         self.dataTableWidget.setRowCount(self.raw_data.shape[0] + 2)
-
+        
         for column, columnvalue in enumerate(columns):
             # Display header in first row
             self.dataTableWidget.setItem(0, column, QTableWidgetItem(columnvalue))
@@ -272,9 +237,6 @@ class CavitometerDeconvolveGUI(QMainWindow):
                 # row + 1 because header is at row 0
                 self.dataTableWidget.setItem(row + 2, column, self.item)
                 self.item.setFlags(Qt.ItemIsEnabled)
-
-        self.valid_data_file = True
-        self.enableOrDisableDeconvolveButton()
 
     def setChannel(self):
         """Update selected channel flag when list clicked."""
@@ -471,15 +433,4 @@ class CavitometerDeconvolveGUI(QMainWindow):
             sqrt(mean(square(self.pressure.real))) / 1e3,
         )
 
-        figure = ResultsWindow(self)
-
-
-def main():
-    app = QApplication(argv)
-    gallery = CavitometerDeconvolveGUI()
-    gallery.show()
-    exit(app.exec())
-
-
-if __name__ == "__main__":
-    main()
+        ResultsWindow(self)

@@ -2,7 +2,7 @@ import pytest
 
 from sys import argv
 
-from cavitometer_deconvolve.GUI.main import CavitometerDeconvolveGUI
+from cavitometer_deconvolve.gui.main import CavitometerDeconvolveGUI
 
 from PyQt5.QtWidgets import QApplication
 

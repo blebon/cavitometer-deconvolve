@@ -4,6 +4,7 @@
     "python.autoComplete.extraPaths": [
         "${workspaceFolder}",
     ],
+    "python.formatting.provider": "black",
     "python.terminal.activateEnvironment": true,
     "python.terminal.activateEnvInCurrentTerminal": true,
     "python.testing.autoTestDiscoverOnSaveEnabled": true,

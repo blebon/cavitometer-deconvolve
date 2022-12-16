@@ -30,7 +30,7 @@ def read_signal(filename: str) -> tuple:
         filename,
     )
 
-    assert "time" in _signal_df.columns[0].lower(), "Invalid Probe file. Time expected in header."
+    assert "time" in _signal_df.columns[0].lower(), "Invalid data file. Time expected in header."
 
     units = _signal_df.iloc[0].tolist()
 
